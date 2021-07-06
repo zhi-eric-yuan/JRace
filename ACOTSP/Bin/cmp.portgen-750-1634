@@ -1,0 +1,49 @@
+
+ACO algorithms for the TSP, v1.02
+
+Parameter-settings: 
+
+max_tries		 1
+max_tours		 0
+max_time		 10.00
+seed		 328945617
+optimum			 1
+n_ants			 1000
+nn_ants			 13
+alpha			 0.95
+beta			 8.60
+rho			 0.71
+q_0			 0.69
+elitist_ants		 0
+ras_ranks		 0
+ls_flag			 0
+nn_ls			 20
+dlb_flag		 1
+as_flag			 0
+eas_flag		 0
+ras_flag		 0
+mmas_flag		 1
+bwas_flag		 0
+acs_flag		 0
+
+begin problem ../Instances/uh00750-0000001634.tsp
+seed 328945617
+begin try 0 
+best 23864332	 iteration 1	 tours 1002	 time 0.230
+best 23588518	 iteration 2	 tours 2002	 time 0.422
+best 23399331	 iteration 3	 tours 3002	 time 0.602
+best 23187504	 iteration 4	 tours 4002	 time 0.779
+best 23134559	 iteration 5	 tours 5002	 time 0.948
+best 22858658	 iteration 6	 tours 6002	 time 1.120
+best 22771707	 iteration 7	 tours 7002	 time 1.287
+best 22747607	 iteration 8	 tours 8002	 time 1.451
+best 22726702	 iteration 9	 tours 9002	 time 1.618
+best 22722255	 iteration 13	 tours 13002	 time 2.278
+best 22718094	 iteration 14	 tours 14002	 time 2.442
+best 22712779	 iteration 16	 tours 16002	 time 2.765
+best 22707903	 iteration 17	 tours 17002	 time 2.927
+best 22704398	 iteration 22	 tours 22002	 time 3.728
+best 22700319	 iteration 27	 tours 27002	 time 4.528
+end try 0
+
+end problem portgen-750-1634

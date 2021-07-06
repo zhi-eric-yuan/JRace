@@ -1,0 +1,54 @@
+## System property file for JRace, Java implementation of the racing based automatic algorithm configurator.
+## Developed by Zhi Eric Yuan. 
+
+###########################
+# COPS system setting
+###########################
+
+debug				=	true	// choose "true" to print logs in detail, "false" to close log output.
+validation  = false  // "true" to perform validation, "false" to turn off validation
+max_exp = 4480    // Maximum number of experiments. Tuning budget. 
+tuning_goal = solution quality  // solution quality, computation time, or anytime performance
+random_seed = 123 // random seed
+# cutoff_time = 1 // the cut-off time for target algorithm
+
+###########################
+# target algorithm setting
+###########################
+
+exec = ACOTSP/Bin/acotsp -r 1 --mmas --quiet -l 0     // the initial part of the executable for evaluate the algorithm to be tuned
+ins_init = -i    // The initial for specifying instance
+seed_init = --seed   // The initial for specifying seed
+ins_seed_file = ACOTSP/seed-settings/training.txt    // the file specifying the training instance files and seed
+test_ins_seed_file = ACOTSP/seed-settings/test.txt   // the file specifying the testing instance files and seed
+param_file = ACOTSP/params_mmas_6p.txt     // The file that defines parameters to be tuned
+ins_dir = ACOTSP/Instances     // The directory to the training instances
+test_ins_dir = ACOTSP/TestInstances     // The directory to the testing instances
+test_result_file  = ACOTSP/tests.txt     // The validation result file
+
+# cmd_end = > /dev/null 2> error          // The ending of the command running the target algorithm for evaluation. Here "> /dev/null 2> error" means in linux bash script not to display the standard output but redirect the standard error to a file called "error". 
+
+###########################
+# COPS algorithmic setting
+###########################
+
+tuner       = cma  // choose the tuner: "urace" or "irace" or "bobyqa" or "cmaes" or "bc" or "simplex"
+race_type     = t // "f" for F-Race, "t" for t-Race (tNo-Race).
+interactive = true  // F-Race with interactive information
+signif_digit = 2    // the number of significant digits (significant figures). By default, 2. 
+s_num_add_eval = 3
+multi_elites = false
+eval_hist_best = false
+#bobyqa_restart_type = 3 // 1: radius 0.5 / 0.2; 2: radius 0.5 with volume rate 0.8; 3: bi-alternating-radius with one radius starting from 0.5 and volume rate 0.8 and one radius always 0.2 
+first_save = false
+d=0.5 // population adaptation factor
+pop_level=4 // population level
+a=3 // lambda factor for starting population level lambda0
+simplex_early=true 
+s_max=25
+#num_unif_fac=24
+num_eval=3 // number of evaluations
+crace=true // use race in cmaes tuner
+plus_num_cand=2 // number of candidates for additional evaluation
+#qual_first_test=2
+adapt_mu = true
