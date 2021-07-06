@@ -2,7 +2,7 @@
 ## Developed by Zhi Eric Yuan. 
 
 ###########################
-# COPS system setting
+# JRace system setting
 ###########################
 
 debug				=	true	// choose "true" to print logs in detail, "false" to close log output.
@@ -31,7 +31,7 @@ opt_file  = orienteering/set_66_opt.txt   // file that supplies the optimum of e
 # cmd_end = > /dev/null 2> error          // The ending of the command running the target algorithm for evaluation. Here "> /dev/null 2> error" means in linux bash script not to display the standard output but redirect the standard error to a file called "error". 
 
 ###########################
-# COPS algorithmic setting
+# JRace algorithmic setting
 ###########################
 
 tuner       = irace  // choose the tuner: "urace" or "bobyqa" or "irace"

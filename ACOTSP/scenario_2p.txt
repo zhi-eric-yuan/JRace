@@ -2,14 +2,14 @@
 ## Developed by Zhi Eric Yuan. 
 
 ###########################
-# COPS system setting
+# JRace system setting
 ###########################
 
 debug				=	true	// choose "true" to print logs in detail, "false" to close log output.
 validation  = false  // "true" to perform validation, "false" to turn off validation
 max_exp = 1920    // Maximum number of experiments. Tuning budget. 
 tuning_goal = solution quality  // solution quality, computation time, or anytime performance
-cutoff_time = 1 // the cut-off time for target algorithm
+# cutoff_time = 1 // the cut-off time for target algorithm
 
 ###########################
 # target algorithm setting
@@ -28,7 +28,7 @@ test_result_file  = ACOTSP/tests.txt     // The validation result file
 # cmd_end = > /dev/null 2> error          // The ending of the command running the target algorithm for evaluation. Here "> /dev/null 2> error" means in linux bash script not to display the standard output but redirect the standard error to a file called "error". 
 
 ###########################
-# COPS algorithmic setting
+# JRace algorithmic setting
 ###########################
 
 tuner       = cma  // choose the tuner: "urace" or "irace" or "bobyqa" or "cmaes" or "bc" or "simplex" or "ubc"
@@ -37,7 +37,7 @@ interactive = true  // F-Race with interactive information
 signif_digit = 2    // the number of significant digits (significant figures). By default, 2. 
 
 ###########################
-# COPS algorithmic setting
+# JRace algorithmic setting
 ###########################
 
 a = 6.0 // the factor a for CMAES population size lambda = 4 + (int) (a * ln D). Default 3.0.
