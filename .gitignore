@@ -24,4 +24,7 @@ hs_err_pid*
 
 .DS_Store
 .svn
+.classpath
+.settings
+.project
 
