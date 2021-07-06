@@ -9,7 +9,6 @@ import org.apache.commons.math.optimization.direct.BaseAbstractScalarOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.font.EAttribute;
 import util.CollectionHandler;
 import util.Randomizer;
 import util.SystemProperty;
