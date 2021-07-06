@@ -1,0 +1,44 @@
+## System property file for JRace, Java implementation of the racing based automatic algorithm configurator.
+## Developed by Zhi Eric Yuan. 
+
+###########################
+# COPS system setting
+###########################
+
+debug				=	true	// choose "true" to print logs in detail, "false" to close log output.
+validation  = false  // "true" to perform validation, "false" to turn off validation
+max_exp = 100    // Maximum number of experiments. Tuning budget. 
+tuning_goal = time  // solution quality, computation time, or anytime performance
+cutoff_time = 1 // the cut-off time for target algorithm
+start_record_time = 0.1 // the time to start record runtime-development for measuring anytime behavior
+log_time = true   // whether to logarithmically transform the time (x-axis) in measuring anytime behavior
+log_qual = false  // whether to logarithmically transform the solution quality (y-axis) in measuring anytime behavior
+
+###########################
+# target algorithm setting
+###########################
+
+exec = orienteering/op     // the initial part of the executable for evaluate the algorithm to be tuned
+ins_init = -i    // The initial for specifying instance
+seed_init = --seed   // The initial for specifying seed
+time_init = -t    // The initial for specifying cutoff time
+opt_init = -o    // The initial for specifying optimum
+ins_seed_file = orienteering/set_66_training.txt    // the file specifying the training instance files and seed
+test_ins_seed_file = orienteering/set_66_test.txt   // the file specifying the testing instance files and seed
+param_file = orienteering/params.txt     // The file that defines parameters to be tuned
+ins_dir = orienteering/instances/op/set_66_1     // The directory to the training instances
+test_ins_dir = orienteering/instances/op/set_66_1     // The directory to the testing instances
+test_result_file  = orienteering/tests.txt     // The validation result file
+opt_file  = orienteering/set_66_opt.txt   // file that supplies the optimum of each instance
+
+# cmd_end = > /dev/null 2> error          // The ending of the command running the target algorithm for evaluation. Here "> /dev/null 2> error" means in linux bash script not to display the standard output but redirect the standard error to a file called "error". 
+
+###########################
+# COPS algorithmic setting
+###########################
+
+tuner       = irace  // choose the tuner: "urace" or "bobyqa" or "irace" or “bc”
+race_type     = t // "f" for F-Race, "t" for t-Race (tNo-Race).
+interactive = true  // F-Race with interactive information
+signif_digit = 2    // the number of significant digits (significant figures). By default, 2. 
+

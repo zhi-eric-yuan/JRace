@@ -1,0 +1,7 @@
+#!/bin/bash
+
+EXEC=tests.OPTester
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+exec java -cp "$DIR/bin:$DIR/lib/jargs.jar:$DIR/lib/jargs-test.jar" $EXEC "$@"
+
