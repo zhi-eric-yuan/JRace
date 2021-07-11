@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.analysis.MultivariateFunction;
@@ -38,6 +39,7 @@ import tests.BenchmarkFunction.Rosen;
 import tune.Tuner;
 import util.CollectionHandler;
 import util.MathHelp;
+import util.SystemCaller;
 
 /**
  * @author yuan
@@ -60,7 +62,8 @@ public class MathTester {
 	public static void main(String[] args) {
 		Tuner.parser = new CopsOptionParser();
 		//testLog();
-		testArray();
+		//testArray();
+		testStringTokenizer();
 		//testHash();
 		//testMath();
 		//testStatTests();
@@ -73,6 +76,43 @@ public class MathTester {
 		//testBobyqa();
 		//testSimplex();
 		//testSmac();
+	}
+
+	private static void testStringTokenizer() {
+		String command = "bash jsprit_latam_hard/run.sh -i ~/Projects/logistics-optimization/solutions-comparator/data/1000_hard_latam_20210628-0704/37473688.json -s 870316129 -c \"late_dt=10.0 ,dist=10.0 \"";
+		StringTokenizer st = new StringTokenizer(command);
+        String[] cmdarray = new String[st.countTokens()];
+        System.out.println(st.countTokens());
+        for (int i = 0; st.hasMoreTokens(); i++)
+            cmdarray[i] = st.nextToken();
+        System.out.println(Arrays.toString(cmdarray));
+        System.out.println(command.substring(command.length()).indexOf(' '));
+        String s = "\"hello world \" eaf wsd";
+        st = new StringTokenizer(s, "\"");
+        while (st.hasMoreTokens()) {
+        	System.out.println(st.nextToken());
+        }
+        //SystemCaller.call("python hello.py");
+        /*SystemCaller.call(new String[] {"python", "/Users/temporaryadmin/Projects/logistics-optimization/solutions-comparator/run_algo.py",
+        		"--binary", "/Users/temporaryadmin/Projects/logistics-assignment/logistics-tools/target/universal/logistics-tools-11.0.1-64-gaf0a9f0-SNAPSHOT/bin/logistics-tools", 
+        		"--metric", "StackingOverLateDeliveries()", 
+        		//"--modifier", "SoftConstraintsLinear(late_dt=10.0, dist=10.0)", 
+        		"--instance", 
+        		"/Users/temporaryadmin/Projects/logistics-optimization/solutions-comparator/data/1000_hard_latam_20210628-0704/37473688.json",
+        		"--seed", "870316129", 
+        		"--modifier", "SoftConstraintsLinear(late_dt=0.49 ,dist=9.1 ,bag_t =0.4 ,late_pu=7.4 )"
+        		});
+        */
+        SystemCaller.call(new String[] {"python", "/Users/temporaryadmin/Projects/logistics-optimization/solutions-comparator/run_algo.py",
+        		"--binary", "/Users/temporaryadmin/Projects/logistics-assignment/logistics-tools/target/universal/logistics-tools-11.0.1-64-gaf0a9f0-SNAPSHOT/bin/logistics-tools", 
+        		"--metric", "StackingOverLateDeliveries()", 
+        		//"--modifier", "SoftConstraintsLinear(late_dt=10.0, dist=10.0)", 
+        		"--instance", 
+        		"/Users/temporaryadmin/Projects/logistics-optimization/solutions-comparator/data/1000_hard_latam_20210628-0704/37473688.json",
+        		"--seed", "870316129", 
+        		"--modifier", "SoftConstraintsLinear(late_dt=0.49 ,dist=9.1 ,bag_t =0.4 ,late_pu=7.4 )"
+        		});
+        //SystemCaller.call("python /Users/temporaryadmin/Projects/logistics-optimization/solutions-comparator/run_algo.py --binary /Users/temporaryadmin/Projects/logistics-assignment/logistics-tools/target/universal/logistics-tools-11.0.1-64-gaf0a9f0-SNAPSHOT/bin/logistics-tools --metric StackingOverLateDeliveries() --instance /Users/temporaryadmin/Projects/logistics-optimization/solutions-comparator/data/1000_hard_latam_20210628-0704/37473688.json --seed 870316129");
 	}
 
 	private static void testUniform() {

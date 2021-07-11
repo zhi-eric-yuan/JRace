@@ -30,6 +30,8 @@ public class SystemProperty {
 	public static final String EXEC = "exec";
 	public static final String INSINIT = "ins_init";
 	public static final String SEEDINIT = "seed_init";
+	public static final String CONFIG_INIT = "config_init";
+	public static final String CONFIG_END = "config_end";
 	public static final String INS_SEED_FILE = "ins_seed_file";
 	public static final String TEST_INS_SEED_FILE = "test_ins_seed_file";
 	public static final String PARAM_FILE = "param_file";

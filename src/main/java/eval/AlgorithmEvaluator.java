@@ -6,6 +6,7 @@ package eval;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -20,6 +21,7 @@ import util.SystemProperty;
 import algo.Configuration;
 import algo.Instance;
 import algo.Parameter;
+import datahandler.OutputHandler;
 
 /**
  * @author yuan Created on Dec 2, 2011
@@ -173,7 +175,7 @@ public class AlgorithmEvaluator implements Evaluator {
 			// nonempty last line
 			try {
 				if (Tuner.goal == 'q') {
-					value = Double.valueOf((new StringTokenizer(line)).nextToken());
+					value = Double.valueOf((new StringTokenizer(line)).nextToken()) * -1;
 				} else if (Tuner.goal == 't') {
 					StringTokenizer st = new StringTokenizer(line);
 					value = Double.valueOf(st.nextToken());
@@ -237,7 +239,7 @@ public class AlgorithmEvaluator implements Evaluator {
 	 * @return the last line of the target algorithm evaluation in String. 
 	 * Returns null if target algorithm evaluation returns empty response.
 	 */
-	private String evaluateAlgo(Configuration conf, Instance ins) {
+	private String evaluateAlgo_cmd(Configuration conf, Instance ins) {
 		StringBuffer cmd = new StringBuffer(SystemProperty.get(SystemProperty.EXEC));
 		cmd.append(" ");
 		cmd.append(ins.getInsInit());
@@ -261,9 +263,6 @@ public class AlgorithmEvaluator implements Evaluator {
 		cmd.append(ins.getSeedInit());
 		cmd.append(" ");
 		cmd.append(ins.getSeed());
-		cmd.append(" ");
-		cmd.append(conf.toString());
-
 
 		Double opt = null;
 		if (Tuner.opt != null) {
@@ -274,6 +273,17 @@ public class AlgorithmEvaluator implements Evaluator {
 				cmd.append(opt);
 				cmd.append(" ");
 			}
+		}
+
+		cmd.append(" ");
+		String configInit = SystemProperty.get(SystemProperty.CONFIG_INIT);
+		if (configInit != null) {
+			cmd.append(configInit);
+		}
+		cmd.append(conf.toString());
+		String configEnd = SystemProperty.get(SystemProperty.CONFIG_END);
+		if (configEnd != null) {
+			cmd.append(configEnd);
 		}
 
 		String cmdEnd = SystemProperty.get(SystemProperty.CMD_END);
@@ -309,10 +319,143 @@ public class AlgorithmEvaluator implements Evaluator {
 			pos = pos2;
 		}
 		log.info("Response: {}", line);
+
 		return line;
 		//return String.valueOf(-System.currentTimeMillis());
 		//return String.valueOf(Randomizer.nextDouble());
 		//return String.valueOf(Randomizer.nextDouble()) + " " + String.valueOf(Randomizer.nextDouble());
+	}
+
+	/**
+	 * Evaluate a configuration on an instance
+	 * @param conf configuration to be evaluated. 
+	 * @param ins instance to be evaluated on. 
+	 * @return the last line of the target algorithm evaluation in String. 
+	 * Returns null if target algorithm evaluation returns empty response.
+	 */
+	private String evaluateAlgo(Configuration conf, Instance ins) {
+		ArrayList<String> cmdArrays = new ArrayList<String>();
+		String exec = SystemProperty.get(SystemProperty.EXEC);
+		cmdArrays.addAll(separateByQuoteAndSpace(exec));
+		cmdArrays.add(ins.getInsInit());
+		cmdArrays.add(new StringBuffer(ins.getDir()).append(File.separator)
+				.append(ins.getName()).toString());
+		cmdArrays.add(ins.getSeedInit());
+		cmdArrays.add(String.valueOf(ins.getSeed()));
+
+		double cutoffTime = Tuner.cutoffTime;
+		if (cutoffTime != Double.MIN_VALUE) {
+			String timeInit = SystemProperty.get(SystemProperty.TIME_INIT);
+			if (timeInit != null) {
+				cmdArrays.add(timeInit);
+				cmdArrays.add(String.valueOf(cutoffTime));
+			}
+		}
+
+		if (Tuner.opt != null) {
+			Double opt = Tuner.opt.get(ins.getName());
+			if (opt != null) {
+				cmdArrays.add(SystemProperty.get(SystemProperty.OPT_INIT));
+				cmdArrays.add(String.valueOf(opt));
+			}
+		}
+		
+		StringBuffer conf2cmd = new StringBuffer();
+		String configInit = SystemProperty.get(SystemProperty.CONFIG_INIT);
+		if (configInit != null) {
+			conf2cmd.append(configInit);
+		}
+		conf2cmd.append(conf.toString());
+		String configEnd = SystemProperty.get(SystemProperty.CONFIG_END);
+		if (configEnd != null) {
+			conf2cmd.append(configEnd);
+		}
+		cmdArrays.addAll(separateByQuoteAndSpace(conf2cmd.toString()));
+
+		String cmdEnd = SystemProperty.get(SystemProperty.CMD_END);
+		if (cmdEnd != null) {
+			cmdArrays.add(cmdEnd);
+		}
+		
+		String[] cmdarray = cmdArrays.toArray(new String[0]);
+		/*cmdarray = new String[] {SystemProperty.get(SystemProperty.EXEC), ins.getInsInit(),
+				new StringBuffer(ins.getDir()).append(File.separator)
+				.append(ins.getName()).toString(), ins.getSeedInit(), 
+				String.valueOf(ins.getSeed()), SystemProperty.CONFIG_INIT, conf.toString()};
+		
+		
+		cmdarray = new String[] {"python", SystemProperty.get(SystemProperty.EXEC), "--instance",
+				new StringBuffer(ins.getDir()).append(File.separator)
+				.append(ins.getName()).toString(), "--seed", 
+				String.valueOf(ins.getSeed()), SystemProperty.get(SystemProperty.CONFIG_INIT), 
+				conf.toString(), SystemProperty.get(SystemProperty.CONFIG_END)};
+		*/
+		//cmd = new StringBuffer("bash randomEval");
+
+		// TODO Here only read the evaluation result from the last line of the
+		// screen output
+		// of running the target algorithm. Should also consider other
+		// possibilities.
+		String response;
+		int trial = 0;
+		
+		do {
+			//response = SystemCaller.call(cmd.toString());
+			response = SystemCaller.call(cmdarray);
+		} while ((response == null || response.trim().length() == 0) && (++trial < maxTrial));
+		
+		if (trial == maxTrial) {
+			// maximum number of trials called with no valid response
+			log.error("{} trials exceeded. The response of the target algorithm is empty. The command line called: {}", maxTrial, Arrays.toString(cmdarray));
+			return null;
+		}
+
+		int pos = response.lastIndexOf('\n');
+		int pos2;
+		String line = response.substring(pos + 1);
+
+		while (line.length() == 0) {
+			pos2 = response.substring(0, pos).lastIndexOf('\n');
+			line = response.substring(pos2 + 1, pos);
+			pos = pos2;
+		}
+		log.info("Response: {}", line);
+		//OutputHandler.writeln(line);
+		return line;
+		//return String.valueOf(-System.currentTimeMillis());
+		//return String.valueOf(Randomizer.nextDouble());
+		//return String.valueOf(Randomizer.nextDouble()) + " " + String.valueOf(Randomizer.nextDouble());
+	}
+
+	private ArrayList<String> separateByQuoteAndSpace(final String text) {
+		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> byQuotes = separateString(text, '\"');
+		if (byQuotes.size() > 1) {
+			boolean nowInQuote = text.charAt(0) == '\"';
+			for (String i: byQuotes) {
+				if (nowInQuote) {
+					list.add(i);
+				} else {
+					list.addAll(separateString(i, ' '));
+				}
+				nowInQuote = !nowInQuote;
+			}
+		}
+		return list;
+	}
+
+	private ArrayList<String> separateString(final String text, char by) {
+		int index;
+		ArrayList<String> list = new ArrayList<String>();
+		String part = text;
+		while ((index = part.indexOf(by)) > 0) {
+			list.add(part.substring(0, index).trim());
+			part = part.substring(index + 1).trim();
+		}
+		if (! part.isEmpty()) {
+			list.add(part);
+		}
+		return list;
 	}
 
 	public double evaluate(int row, int column) {
