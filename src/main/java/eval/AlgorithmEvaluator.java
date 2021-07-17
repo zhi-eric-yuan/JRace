@@ -175,7 +175,7 @@ public class AlgorithmEvaluator implements Evaluator {
 			// nonempty last line
 			try {
 				if (Tuner.goal == 'q') {
-					value = Double.valueOf((new StringTokenizer(line)).nextToken()) * -1;
+					value = Double.valueOf((new StringTokenizer(line)).nextToken());
 				} else if (Tuner.goal == 't') {
 					StringTokenizer st = new StringTokenizer(line);
 					value = Double.valueOf(st.nextToken());
@@ -428,6 +428,9 @@ public class AlgorithmEvaluator implements Evaluator {
 	}
 
 	private ArrayList<String> separateByQuoteAndSpace(final String text) {
+		if (text == null || text.isEmpty()) {
+			return new ArrayList<String>(0);
+		}
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> byQuotes = separateString(text, '\"');
 		if (byQuotes.size() > 1) {
@@ -440,6 +443,8 @@ public class AlgorithmEvaluator implements Evaluator {
 				}
 				nowInQuote = !nowInQuote;
 			}
+		} else {
+			list.addAll(separateString(byQuotes.get(0), ' '));
 		}
 		return list;
 	}
