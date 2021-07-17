@@ -58,7 +58,7 @@ public class IRaceTuner {
 		log.info("number of candidates of iteration {}: {}", iteration, numCandidates);
 
 		Configuration[] configs = URaceTuner.uniformRandomSampling(params, numCandidates);
-		if (Tuner.haveCategorical) {
+		if (Tuner.hasCategorical) {
 			initCatProb(configs);
 		}
 		configs = uniqueConfigurations(configs);
@@ -160,12 +160,12 @@ public class IRaceTuner {
 		OutputHandler.writeArray(sampledCounts);
 		double numRate = -1;
 		double catRate = -1;
-		if (Tuner.haveNumerical) {
+		if (Tuner.hasNumerical) {
 			// rate in numerical defines the amount of half-range as standard deviation
 			numRate = computeNumRate(numCandidates, iteration, dim);
 			log.info("numerical rate {}", numRate);
 		}
-		if (Tuner.haveCategorical) {
+		if (Tuner.hasCategorical) {
 			// rate in categorical defines the amount being "evaporated"
 			catRate = 1.0 * iteration / numIterations;
 			log.info("categorical rate {}", catRate);
@@ -192,7 +192,7 @@ public class IRaceTuner {
 			while (true) {
 			for (int j = 0; j < count; j++) {
 				candi = new Configuration(dim);
-				if (Tuner.haveCategorical) {
+				if (Tuner.hasCategorical) {
 					probMap = new HashMap<CategoricalParameter, double[]>(dim);
 				}
 				for (int k = 0; k < dim; k++) {
@@ -405,7 +405,7 @@ public class IRaceTuner {
 	}
 
 	private Configuration[] uniqueConfigurations(Configuration[] configurations) {
-		if (Tuner.haveConditional) {
+		if (Tuner.hasConditional) {
 			configurations = nullifyConditionals(configurations);
 		}
 		AlgorithmEvaluator eval = new AlgorithmEvaluator(configurations, null);

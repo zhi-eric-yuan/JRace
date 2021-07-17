@@ -80,12 +80,13 @@ public class CMAUOptimizer extends CMAESOptimizer {
 		//double numUnifFac = SystemProperty.getDouble(SystemProperty.NUM_UNIF_FAC, ct.a);
 		//int numUnif = ct.determineLambdaByFactor(numUnifFac);
 		//int numUnif = ct.getLambda0();
-		int numUnif = ct.getLambda();
-		log.info("Uniformly sample {} points", numUnif);
-		UniformRandomOptimizer unifOptim = new UniformRandomOptimizer(dimension, boundaries);
+		
 		double[] bestPoint = null;
 		ArrayList<RealPointValuePair> bests = null;
-		if (earlyQualification) {
+		if (! Tuner.hasDefault) {
+			int numUnif = ct.getLambda();
+			log.info("Uniformly sample {} points", numUnif);
+			UniformRandomOptimizer unifOptim = new UniformRandomOptimizer(dimension, boundaries);
 			if (! ct.race || ct.numEval <= ct.firstTest) {
 				ct.updateQualInstances();
 				unifOptim.initBest(ct.numAddEval);
@@ -127,18 +128,23 @@ public class CMAUOptimizer extends CMAESOptimizer {
 				
 			}
 			bestPoint = bests.get(0).getPoint();
-			restEval = ct.addElite(bestPoint);
-
-			int startLambda = ct.determineStartLambda(restEval);
-			
-			// if the rest budget less than lambda
-			if (startLambda <= 0) {
-				this.bestPoints = bests;
-				return bests.get(0);
-			} else {
-				this.lambda = startLambda;
-			}
+		} else {
+			log.info("Adopt default configuration {} for CMAES starting point", 
+					Tuner.defaultConfig.toString());
+			bestPoint = Tuner.defaultConfig.scale();
 		}
+		restEval = ct.addElite(bestPoint);
+
+		int startLambda = ct.determineStartLambda(restEval);
+		
+		// if the rest budget less than lambda
+		if (startLambda <= 0) {
+			this.bestPoints = bests;
+			return bests.get(0);
+		} else {
+			this.lambda = startLambda;
+		}
+
 		//CMAESOptimizer optim = new CMAESOptimizer(0, null, boundaries);
 		//optim.preIterationCount = 1;
 		//optim.earlyQualification = true;

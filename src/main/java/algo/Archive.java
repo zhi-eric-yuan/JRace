@@ -13,7 +13,8 @@ import java.util.HashMap;
  */
 public class Archive {
 	
-	protected HashMap<Configuration, HashMap<Instance, Double>> map;
+	protected HashMap<Configuration, HashMap<Instance, Double>> map = new 
+			HashMap<Configuration, HashMap<Instance,Double>>();;
 	protected int size;
 
 	/**
@@ -44,9 +45,6 @@ public class Archive {
 	public Double put(Configuration configuration, Instance instance, Double value) {
 		if (configuration == null || instance == null || value == null) {
 			return null;
-		}
-		if (map == null) {
-			map = new HashMap<Configuration, HashMap<Instance,Double>>();
 		}
 		size++;
 		HashMap<Instance, Double> insMap = map.get(configuration);

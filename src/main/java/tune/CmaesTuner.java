@@ -38,7 +38,7 @@ public class CmaesTuner extends PostSelectionTuner {
 			SystemProperty.C_NUM_ADD_EVAL, 2);
 	public boolean race = SystemProperty.getBoolean(SystemProperty.CRACE, false);
 	public boolean adaptMu = SystemProperty.getBoolean(SystemProperty.ADAPT_MU, false);
-	public int firstTest = SystemProperty.getInteger(SystemProperty.QUAL_FIRST_TEST, 2);
+	public int firstTest = SystemProperty.getInteger(SystemProperty.QUAL_FIRST_TEST, 1);
 	public double maxLambda;
 	public final int maxResample = 10;
 	public boolean isIncrease = true;
@@ -59,8 +59,8 @@ public class CmaesTuner extends PostSelectionTuner {
 			log.error("budget {} is too small to start a new iteration");
 			return;
 		}
-		log.info("CMAES tuner starts with race {} adapt mu {} first test {} numEval {}", race, 
-				adaptMu, firstTest, numEval);
+		log.info("CMAES tuner starts with race {} adapt mu {} first test {} numEval {} hasDefault {}", 
+				race, adaptMu, firstTest, numEval, Tuner.hasDefault);
 		optim = new CMAUOptimizer(lambda, null, new double[][]{lowers, uppers});
 		optim.initBest(numAddEval);
 		optim.earlyQualification = true;

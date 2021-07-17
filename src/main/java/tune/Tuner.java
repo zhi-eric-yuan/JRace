@@ -56,10 +56,11 @@ public class Tuner {
 	public static double cutoffTime;
 	public static HashMap<String, Double> opt;
 	public static boolean useFRace;
-	public static boolean haveCategorical;
-	public static boolean haveConditional;
-	public static boolean haveNumerical;
+	public static boolean hasCategorical;
+	public static boolean hasConditional;
+	public static boolean hasNumerical;
 	public static Configuration defaultConfig;
+	public static boolean hasDefault;
 	private static long randomSeed;
 
 	/**
@@ -78,12 +79,12 @@ public class Tuner {
 		init();
 		String paramFile = SystemProperty.get(SystemProperty.PARAM_FILE);
 		Parameter[] params = InputHandler.readParams(paramFile);
-		haveNumerical = hasNumericalParameter(params);
-		log.info("Numerical parameters exists? {}", haveNumerical);
-		haveCategorical = hasCategoricalParameter(params);
-		log.info("Categorical parameters exists? {}", haveCategorical);
-		haveConditional = hasConditionalParameter(params);
-		log.info("Conditional parameters exists? {}", haveConditional);
+		hasNumerical = hasNumericalParameter(params);
+		log.info("Numerical parameters exists? {}", hasNumerical);
+		hasCategorical = hasCategoricalParameter(params);
+		log.info("Categorical parameters exists? {}", hasCategorical);
+		hasConditional = hasConditionalParameter(params);
+		log.info("Conditional parameters exists? {}", hasConditional);
 		checkDefaultConfiguration(params);
 		int budget = Integer.valueOf(SystemProperty.get(SystemProperty.MAXEXP));
 		String insFile = SystemProperty.get(SystemProperty.INS_SEED_FILE);
@@ -149,7 +150,7 @@ public class Tuner {
 			bestConf = urace(params, budget, instances, useFRace);
 		} else if (tuner.toLowerCase().startsWith("bo")) {
 			
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -158,7 +159,7 @@ public class Tuner {
 		} else if (tuner.toLowerCase().startsWith("i")) {
 			bestConf = irace(params, budget, instances);
 		} else if (tuner.toLowerCase().startsWith("c")) {
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -166,7 +167,7 @@ public class Tuner {
 			}
 		} else if (tuner.toLowerCase().startsWith("bc")) {
 			
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -174,7 +175,7 @@ public class Tuner {
 			}
 		} else if (tuner.toLowerCase().startsWith("ubc")) {
 			
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -182,7 +183,7 @@ public class Tuner {
 			}
 		} else if (tuner.toLowerCase().startsWith("sbc")) {
 			
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -190,7 +191,7 @@ public class Tuner {
 			}
 		} else if (tuner.toLowerCase().startsWith("sc")) {
 			
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -198,14 +199,14 @@ public class Tuner {
 			}
 		} else if (tuner.toLowerCase().equals("bs")) {
 			
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
 				bestConf = bs(params, budget, instances);
 			}
 		} else if (tuner.toLowerCase().startsWith("si")) {
-			if (haveCategorical) {
+			if (hasCategorical) {
 				log.warn("{} cannot be used to tune categorical parameters, use I/Race instead.", tuner);
 				bestConf = irace(params, budget, instances);
 			} else {
@@ -401,7 +402,6 @@ public class Tuner {
 		Parameter param;
 		int dim = params.length;
 		Configuration config = new Configuration(dim);
-		boolean hasDefault = true;
 		double value;
 		String catValue;
 		for (int i = 0; i < dim; i++) {
@@ -427,6 +427,7 @@ public class Tuner {
 			}
 		}
 		log.info("Default parameter configuration given: {}", config);
+		hasDefault = true;
 		defaultConfig = config;
 	}
 
