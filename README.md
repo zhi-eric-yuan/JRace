@@ -7,6 +7,7 @@ Example run:
 To compile from source: `javac -d bin -cp lib/slf4j-api-1.7.5.jar:lib/logback-classic-1.0.13.jar:lib/logback-core-1.0.13.jar $(find . -name *.java)`
 
 ## Usage
+
 Follow the the steps below to configure your algorithm with jrace:
 1. Create a directory to store configuration scenarios.
 ```bash
@@ -25,3 +26,15 @@ cp ../scenario.tmpl scenario.txt
 ```bash
 java -cp bin:lib/slf4j-api-1.7.5.jar:lib/logback-classic-1.0.13.jar:lib/logback-core-1.0.13.jar tune.Tuner -s tuning/scenario.txt
 ```
+
+## Configurator setting
+
+Configurator can be specified in the scenario file under the option `tuner`. Currently the following configurators are available: 
+* Full configurator that tunes numeric, categorical, and conditional parameters
+  * `irace` as default configurator, iterated racing following the proposal in [1,2]. 
+  * `urace` racing with uniform random sampled configurations [1]. 
+
+## Reference
+[1] [M. Birattari, Z. Yuan, P. Balaprakash, and T. Stützle. F-Race and iterated F-Race: An overview. In T. Bartz-Beielstein et al., editors, Experimental Methods for the Analysis of Optimization Algorithms, Natural Computation Series, pages 311-336, Springer, 2010.](http://iridia.ulb.ac.be/IridiaTrSeries/link/IridiaTr2009-018.pdf)
+
+[2] [Z. Yuan, Automated algorithm configuration for hard optimization problems. Ph.D. thesis, IRIDIA, Université Libre de Bruxelles, Belgium](http://iridia.ulb.ac.be/~zyuan/downloads/yuan2019thesis.pdf)
