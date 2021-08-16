@@ -1,6 +1,12 @@
 # jrace
 Java implementation of racing based automatic algorithm configurators.
 
+## Build and run
+The best way is to build the project by maven: 
+`mvn compile`.
+Then the binary files will be generated to the directory `target/classes`. One can also build the binary jar file by running `mvn clean compile assembly:single`. The jar file will be found in the `target` directory. Run the jar file from command line by `java -jar target/jrace.1.0.1.jar -s random/scenario.txt`. Alternatively, one can run by maven as follows: `mvn exec:java -Dexec.args="-s random/scenario.txt"`.
+
+Alternatively, one can also build and run by JDK. 
 Example run: 
 `java -cp bin:lib/slf4j-api-1.7.5.jar:lib/logback-classic-1.0.13.jar:lib/logback-core-1.0.13.jar tune.Tuner -s random/scenario.txt`
 
