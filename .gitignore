@@ -30,3 +30,4 @@ bin/
 *.class
 target/
 *.jar
+screenlog*

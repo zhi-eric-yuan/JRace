@@ -7,7 +7,7 @@
 
 debug				=	false	// choose "true" to print logs in detail, "false" to close log output.
 validation  = false  // "true" to perform validation, "false" to turn off validation
-max_exp = 1920    // Maximum number of experiments. Tuning budget. 
+max_exp = 100    // Maximum number of experiments. Tuning budget. 
 tuning_goal = solution quality  // solution quality, computation time, or anytime performance
 cutoff_time = 1 // the cut-off time for target algorithm
 
