@@ -28,3 +28,5 @@ pso
 jsprit*
 bin/
 *.class
+target/
+*.jar
