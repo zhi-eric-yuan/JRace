@@ -38,7 +38,7 @@ public class CmaesTuner extends PostSelectionTuner {
 			SystemProperty.C_NUM_ADD_EVAL, 2);
 	public boolean race = SystemProperty.getBoolean(SystemProperty.CRACE, false);
 	public boolean adaptMu = SystemProperty.getBoolean(SystemProperty.ADAPT_MU, false);
-	public int firstTest = SystemProperty.getInteger(SystemProperty.QUAL_FIRST_TEST, 1);
+	public int firstTest = SystemProperty.getInteger(SystemProperty.QUAL_FIRST_TEST, 2);
 	public double maxLambda;
 	public final int maxResample = 10;
 	public boolean isIncrease = true;

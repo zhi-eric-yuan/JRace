@@ -82,7 +82,7 @@ public class SystemCaller {
 			*	The	format	returned	is	the	long	format	which	includes	file
 			*	information	and	permissions.
 			*/																																				
-			System.out.println("runs " + Arrays.toString(cmdarray));
+			OutputHandler.writeln("runs " + Arrays.toString(cmdarray));
 			//Process	p = r.exec(cmd);
 			Process	p = r.exec(cmdarray);
 			InputStream	in = p.getInputStream();
@@ -93,7 +93,7 @@ public class SystemCaller {
 			//Read the command output
 			String line;
 			while ((line = bufferedreader.readLine()) != null) {
-				System.out.println(line);
+				OutputHandler.writeln(line);
 				sb.append(line);
 				sb.append("\n");
 			}

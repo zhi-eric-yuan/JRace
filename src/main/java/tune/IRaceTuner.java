@@ -36,6 +36,10 @@ public class IRaceTuner {
 	private double smoothFactor = 0.9;
 	protected static final int muInc = (int) Math.round(SystemProperty.getDouble(
 			SystemProperty.MU_INC, 1));
+	protected static final int firstTest = (int) Math.round(SystemProperty.getDouble(
+			SystemProperty.FIRST_TEST, 5));
+	protected static final int firstTestInc = (int) Math.round(SystemProperty.getDouble(
+			SystemProperty.FIRST_TEST_INC, 0));
 
 	/**
 	 * 
@@ -51,6 +55,7 @@ public class IRaceTuner {
 		int mu = computeMu(iteration);
 		int iterationBudget = computeIterationBudget(budget, numIterations, iteration);
 		int numCandidates = computeNumCandidates(iterationBudget, mu);
+		int iterationFirstTest = firstTest;
 
 		log.info("number of parameters: {}", numParams);
 		log.info("number of iterations: {}", numIterations);
@@ -82,7 +87,7 @@ public class IRaceTuner {
 			}
 			
 			racer = new Race(numCandidates, numInstances, eval, iterationBudget, 
-					Tuner.useFRace, 5, survivalQuota);
+					Tuner.useFRace, iterationFirstTest, survivalQuota);
 			bestIndex = racer.race();
 			log.info("Best parameter configuration found: {}", configs[bestIndex].toString());
 			iterationUsedExp = racer.getNumExp();
@@ -121,7 +126,7 @@ public class IRaceTuner {
 				configs = sampleConfigurationsNormal(elites, eliteWeights, numCandidates, 
 						numElites, iteration - 1, params, numIterations);
 			}
-
+			iterationFirstTest += firstTestInc;
 		}
 		log.info("IRace ends. Best configuration found: {}", 
 				configs[bestIndex].toString());

@@ -18,7 +18,7 @@ import datahandler.InputHandler;
  * Created on 06.10.2005
  */
 public class SystemProperty {
-	
+
 	protected static HashMap<String, String> properties;
 	//public static final String PROPERTY_FILE_NAME = "System.properties";
 	public static final String PROPERTY_FILE_NAME = 
@@ -76,7 +76,9 @@ public class SystemProperty {
 	public static final String PLUS_NUM_CAND = "plus_num_cand";
 	public static final String QUAL_FIRST_TEST = "qual_first_test";
 	public static final String ADAPT_MU = "adapt_mu";
-	
+	public static final String FIRST_TEST = "first_test";
+	public static final String FIRST_TEST_INC = "first_test_inc";
+
 	/**
 	 * Create a new SystemProperty object.
 	 */
