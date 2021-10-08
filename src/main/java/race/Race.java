@@ -171,7 +171,7 @@ public class Race {
 		int iterationNumExp = numAlive;
 		
 		for (int i = 0; i < numInstances; i++) {
-			// Note: use a loose stopping criterion "numExp + min{numAlive, iterationNumExp} > maxExp". 
+			// Note: use a loose stopping criterion "numExp + min(numAlive, iterationNumExp) > maxExp".
 			// Some evaluations might be archived.  
 			// The total number of evaluations is rarely possible to exceed the maximum amount. 
 			if ((i >= firstTest - 1 && survivorIndices.length <= stopMinCand) 
@@ -203,12 +203,16 @@ public class Race {
 				
 				if (evaluator instanceof AlgorithmEvaluator) {
 					iterationNumExp += ((AlgorithmEvaluator)evaluator).getNumExp();
+					if (((AlgorithmEvaluator)evaluator).exceedMaxConsecutiveFailedEvaluations()) {
+						// Too many failed consecutive failed evaluations, stop tuning.
+						return -1;
+					}
 				} else {
 					iterationNumExp++;
 				}
 				
 				if (numExp + iterationNumExp > maxExp) {
-					log.error("The total number of evaluations has exceeds the maximum budget {}", 
+					log.error("The total number of evaluations has exceeded the maximum budget {}",
 							maxExp);
 					break;
 				}
@@ -305,6 +309,9 @@ public class Race {
 				minIndex = i;
 			}
 			meanCandidates[i] = sumCandi[i] / numTasks;
+		}
+		if (minIndex == -1) {
+
 		}
 		/*int bestCandiIndex = survivorIndices[index];
 		OutputHandler.writeln("Best candidate " + bestCandiIndex + " with mean " 

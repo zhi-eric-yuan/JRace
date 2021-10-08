@@ -40,6 +40,7 @@ public class IRaceTuner {
 			SystemProperty.FIRST_TEST, 5));
 	protected static final int firstTestInc = (int) Math.round(SystemProperty.getDouble(
 			SystemProperty.FIRST_TEST_INC, 0));
+	protected boolean success = true;
 
 	/**
 	 * 
@@ -88,10 +89,16 @@ public class IRaceTuner {
 			
 			racer = new Race(numCandidates, numInstances, eval, iterationBudget, 
 					Tuner.useFRace, iterationFirstTest, survivalQuota);
-			bestIndex = racer.race();
+			int raceBestIndex = racer.race();
+			if (raceBestIndex == -1) {
+				log.error("JRace interrupted at {} evaluations of total budget {}", usedExp, budget);
+				break;
+			}
+			bestIndex = raceBestIndex;
 			log.info("Best parameter configuration found: {}", configs[bestIndex].toString());
 			iterationUsedExp = racer.getNumExp();
 			usedExp += iterationUsedExp;
+			TuningStatus.update(usedExp, configs[bestIndex]);
 			budgetLeft -= iterationUsedExp;
 			log.info("Experiments used in iteration {}: {}; in total {} / {}, rest {}", 
 					iteration, iterationUsedExp, usedExp, budget, budgetLeft);
@@ -128,10 +135,16 @@ public class IRaceTuner {
 			}
 			iterationFirstTest += firstTestInc;
 		}
-		log.info("IRace ends. Best configuration found: {}", 
-				configs[bestIndex].toString());
 
-		return configs[bestIndex];
+		if (bestIndex != -1) {
+			log.info("IRace ends. Best configuration found: {}",
+					configs[bestIndex].toString());
+
+			return configs[bestIndex];
+		} else {
+			return null;
+		}
+
 	}
 
 	private Configuration[] nullifyConditionals(Configuration[] configs) {

@@ -41,11 +41,20 @@ public class AlgorithmEvaluator implements Evaluator {
 	
 	/**
 	 * The maximum number of times that a search method can read consecutively from archive
-	 * without sampling any new points. 
+	 * without sampling any new points. This indicates a stagnation and suggests a restart.
 	 */
 	int maxConsecutiveArchiveRead = 50;
 	
 	int numConsecutiveArchiveRead = 0;
+
+	//TODO make it configurable
+	int maxConsecutiveFailedEvaluations = 2;
+
+	int numConsecutiveFailedEvaluations = 0;
+
+	public boolean exceedMaxConsecutiveFailedEvaluations() {
+		return numConsecutiveFailedEvaluations >= maxConsecutiveFailedEvaluations;
+	}
 
 	/**
 	 * @return the numConsecutiveArchiveRead
@@ -167,8 +176,8 @@ public class AlgorithmEvaluator implements Evaluator {
 			line = evaluateAlgo(conf, ins);
 			
 			if (line == null) {
-				// command line is empty
-				numExp = 1;
+				// cannot get valid response
+				numExp = 0;
 				return Double.MAX_VALUE;
 			}
 
@@ -406,9 +415,12 @@ public class AlgorithmEvaluator implements Evaluator {
 		
 		if (trial == maxTrial) {
 			// maximum number of trials called with no valid response
+			numConsecutiveFailedEvaluations++;
 			log.error("{} trials exceeded. The response of the target algorithm is empty. The command line called: {}", maxTrial, Arrays.toString(cmdarray));
 			return null;
 		}
+
+		numConsecutiveFailedEvaluations = 0;
 
 		int pos = response.lastIndexOf('\n');
 		int pos2;

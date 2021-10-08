@@ -222,6 +222,17 @@ public class Tuner {
 			validate(bestConf);
 		}
 
+		System.out.println(TuningStatus.listAll());
+		if (bestConf == null) {
+			if (TuningStatus.isEmpty()) {
+				System.out.println("Failed");
+			} else {
+				System.out.println(new StringBuilder("Interrupted ").append(TuningStatus.listLast()));
+			}
+		} else {
+			System.out.println(new StringBuilder("Success ").append(bestConf.toString()).toString());
+		}
+
 	}
 
 	/**
