@@ -20,11 +20,11 @@ ins_init = -i    // The initial for specifying instance
 seed_init = --seed   // The initial for specifying seed
 ins_seed_file = ACOTSP/seed-settings/training.txt    // the file specifying the training instance files and seed
 test_ins_seed_file = ACOTSP/seed-settings/test.txt   // the file specifying the testing instance files and seed
-param_file = ACOTSP/params_mmas_2p.txt     // The file that defines parameters to be tuned
+param_file = random/params.txt     // The file that defines parameters to be tuned
 ins_dir = ACOTSP/Instances     // The directory to the training instances
 test_ins_dir = ACOTSP/TestInstances     // The directory to the testing instances
 test_result_file  = ACOTSP/tests.txt     // The validation result file
-
+output_configuration_json_file = random/output_config.json	// Output file containing the configuration in JSON format
 # cmd_end = > /dev/null 2> error          // The ending of the command running the target algorithm for evaluation. Here "> /dev/null 2> error" means in linux bash script not to display the standard output but redirect the standard error to a file called "error". 
 
 ###########################
@@ -48,6 +48,9 @@ e = -12 // the factor e for CMAES, stopTolFun = 10^e. Default -12.
 f = -13 // the factor f for CMAES, stopTolFunHist = 10^f. Default -13.
 g = -11 // the factor g for CMAES, stopTolX = 10^g. Default -11.
 pop_level = 3
+num_eval = 4
+crace = true
+qual_first_test = 2
 eval_hist_best = false
 s_num_add_eval = 3
 multi_elites = false
