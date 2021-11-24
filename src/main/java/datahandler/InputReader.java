@@ -32,7 +32,12 @@ public class InputReader {
 	protected String line;
 
 	public InputReader(String fileName){
-		this(".", fileName);
+		if (fileName.startsWith("/")) {
+			initReadFile("", fileName);
+		}
+		else {
+			initReadFile(".", fileName);
+		}
 	}
 
 	/**
@@ -42,17 +47,21 @@ public class InputReader {
 	 */
 	public InputReader(String path, String name){
 		super();
-		try{
+		initReadFile(path, name);
+	}
+
+	private void initReadFile(String path, String name) {
+		try {
 			//this.path = path;
 			//this.fileName = name;
 			File file = new File(path, name);
 			FileReader reader = new FileReader(file);
 			in = new BufferedReader(reader);
-		}catch (FileNotFoundException fe){
-			System.err.println("file not found in InputReader constructor: "+fe.getMessage());
+		} catch (FileNotFoundException fe) {
+			System.err.println("file not found in InputReader constructor: " + fe.getMessage());
 		}
 	}
-	
+
 	/** reads the next line of input and creates the associated StringTokenizer. */
 	public boolean readLine( ) {
 		try {
