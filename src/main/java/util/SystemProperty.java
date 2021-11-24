@@ -78,6 +78,7 @@ public class SystemProperty {
 	public static final String ADAPT_MU = "adapt_mu";
 	public static final String FIRST_TEST = "first_test";
 	public static final String FIRST_TEST_INC = "first_test_inc";
+	public static final String OUTPUT_CONFIGURATION_JSON_FILE = "output_configuration_json_file";
 
 	/**
 	 * Create a new SystemProperty object.

@@ -53,4 +53,11 @@ public class CategoricalParameter extends Parameter {
 		}
 		return -1;
 	}
+
+	public boolean isBoolean() {
+		return getNumValues() == 2 &&
+				((values[0].equalsIgnoreCase("true") && values[1].equalsIgnoreCase("false"))
+				|| (values[1].equalsIgnoreCase("true") && values[0].equalsIgnoreCase("false")));
+	}
+
 }

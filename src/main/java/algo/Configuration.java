@@ -11,7 +11,6 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tune.Tuner;
 import util.CollectionHandler;
 
 /**
@@ -353,4 +352,33 @@ public class Configuration {
 		}
 		return scaled;
 	}
+
+    public String ToJsonString() {
+		StringBuilder sb = new StringBuilder("{");
+		Parameter param;
+		Object value;
+		for (int i = 0; i < dim; i++) {
+			value = getValue(i);
+			if (value != null) {
+				param = getParam(i);
+				sb.append(param.toJsonString()).append(":");
+				if (param.isCategorical()) {
+					if (param.isBoolean()) {
+						sb.append(((String)value).toLowerCase());
+					} else {
+						sb.append("\"").append(value).append("\"");
+					}
+				} else {
+					sb.append(value);
+				}
+				if (i < dim - 1) {
+					sb.append(",");
+				} else {
+					sb.append("}");
+				}
+			}
+		}
+
+		return sb.toString();
+    }
 }

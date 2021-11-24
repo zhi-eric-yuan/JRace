@@ -92,7 +92,9 @@ public class Tuner {
 		Instance[] instances = InputHandler.readInstanceSeed(insFile);
 		log.info("Max number of evaluations: {}", budget);
 		Configuration bestConf = null;
-		
+
+		String outputConfigJsonFile = SystemProperty.get(SystemProperty.OUTPUT_CONFIGURATION_JSON_FILE);
+
 		String tuningGoal = SystemProperty.get(SystemProperty.TUNING_GOAL).toLowerCase();
 		if (tuningGoal.startsWith("so") || tuningGoal.startsWith("qu")) {
 			goal = 'q';
@@ -225,14 +227,25 @@ public class Tuner {
 		System.out.println(TuningStatus.listAll());
 		if (bestConf == null) {
 			if (TuningStatus.isEmpty()) {
-				System.out.println("Failed");
+				System.err.println("Failed");
+				System.exit(3);
 			} else {
-				System.out.println(new StringBuilder("Interrupted ").append(TuningStatus.listLast()));
+				writeBestConfigToFile(outputConfigJsonFile, TuningStatus.lastBestConfiguration());
+				System.err.println(new StringBuilder("Interrupted ").append(TuningStatus.listLast()));
+				System.exit(4);
 			}
 		} else {
+			writeBestConfigToFile(outputConfigJsonFile, bestConf);
 			System.out.println(new StringBuilder("Success ").append(bestConf.toString()).toString());
 		}
 
+	}
+
+	private static void writeBestConfigToFile(String outputConfigJsonFile, Configuration configuration) {
+		if (outputConfigJsonFile != null && ! outputConfigJsonFile.isEmpty()) {
+			 OutputHandler.print2File(outputConfigJsonFile, configuration.ToJsonString());
+			 log.info("Best configuration {} written to json file: {}", configuration, outputConfigJsonFile);
+		}
 	}
 
 	/**

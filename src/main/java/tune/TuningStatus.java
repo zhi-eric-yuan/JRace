@@ -30,4 +30,11 @@ public class TuningStatus {
         return new StringBuilder().append(usedBudget.get(lastIndex)).append(" ")
                 .append(bestConfigurations.get(lastIndex)).toString();
     }
+
+    public static Configuration lastBestConfiguration() {
+        if (isEmpty()) {
+            return null;
+        }
+        return bestConfigurations.get(bestConfigurations.size() - 1);
+    }
 }

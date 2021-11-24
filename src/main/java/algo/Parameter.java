@@ -32,6 +32,11 @@ public class Parameter {
 	 * Parameter name
 	 */
 	protected String name;
+
+	public String getName() {
+		return name;
+	}
+
 	/**
 	 * Parameter representation, e.g. "--alpha= ". 
 	 */
@@ -76,6 +81,10 @@ public class Parameter {
 		StringBuffer sb = new StringBuffer(name);
 		return sb.toString();
 	}
+
+	public String toJsonString() {
+		return new StringBuilder("\"").append(name).append("\"").toString();
+	}
 	
 	public boolean equals(Object obj) {
 		return obj instanceof Parameter && ((Parameter)obj).name.equals(name);
@@ -99,6 +108,8 @@ public class Parameter {
 		return conditionalValues.get(value) != null;
 	}
 
-	
 
+	public boolean isBoolean() {
+		return isCategorical() && this.isBoolean();
+	}
 }
