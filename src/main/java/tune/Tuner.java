@@ -236,7 +236,7 @@ public class Tuner {
 			}
 		} else {
 			writeBestConfigToFile(outputConfigJsonFile, bestConf);
-			System.out.println(new StringBuilder("Success ").append(bestConf.toString()).toString());
+			System.err.println(new StringBuilder("Success ").append(bestConf.toString()).toString());
 		}
 
 	}
