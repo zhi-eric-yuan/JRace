@@ -168,68 +168,74 @@ public class AlgorithmEvaluator implements Evaluator {
 			numConsecutiveArchiveRead = 0;
 		}
 
-		int trial = 0;
-		String line;
-		double opt;
-		double qualScale;
-		do {
-			line = evaluateAlgo(conf, ins);
-			
-			if (line == null) {
-				// cannot get valid response
-				numExp = 0;
+		value = Tuner.warmStartArchive.get(conf, ins);
+		if (value != null) {
+			log.info("Read from warm start archive: {}", value);
+		} else {
+			int trial = 0;
+			String line;
+			double opt;
+			double qualScale;
+			do {
+				line = evaluateAlgo(conf, ins);
+
+				if (line == null) {
+					// cannot get valid response
+					numExp = 0;
+					return Double.MAX_VALUE;
+				}
+
+				// nonempty last line
+				try {
+					if (Tuner.goal == 'q') {
+						value = Double.valueOf((new StringTokenizer(line)).nextToken());
+					} else if (Tuner.goal == 't') {
+						StringTokenizer st = new StringTokenizer(line);
+						value = Double.valueOf(st.nextToken());
+						double qual = Double.valueOf(st.nextToken());
+						//if (value >= Tuner.cutoffTime) {
+						if (st.hasMoreTokens()
+								&& !st.nextToken().toLowerCase().startsWith("sat")) {
+							// The modified PAR10 criterion for tuning computation time
+							if (Tuner.opt == null) {
+								// no optimum info provided. return 0.01 and assume it represents the gap in 100%
+								opt = 0.01;
+								qualScale = 100;
+								qual = Math.max(qual, opt);
+								// only for tuning cplex with gap as quality,
+								// the gap shouldn't be larger than 100%.
+								if (qual >= qualScale) {
+									qual = penalty * qualScale;
+								}
+								//qual = Math.min(qual, qualScale);
+							} else {
+								opt = Tuner.opt.get(ins.getName());
+								qualScale = opt;
+							}
+							value = penalty * Tuner.cutoffTime
+									* (1 + penalty * Math.abs(qual - opt) / qualScale);
+							//value = Tuner.cutoffTime * qual / opt;
+						}
+						//value = Math.log(value + 1);
+					}
+					break;
+				} catch (Exception e) {
+					e.printStackTrace();
+					log.error("Invalid last line of response: {}", line);
+				}
+			} while (++trial < maxTrial);
+
+			if (trial == maxTrial) {
+				// invalid last line after max number of trials
+				log.error("max number {} trials exceeded. Invalid last line of target algorithm response: {}", maxTrial, line);
+				numExp = 1;
 				return Double.MAX_VALUE;
 			}
-
-			// nonempty last line
-			try {
-				if (Tuner.goal == 'q') {
-					value = Double.valueOf((new StringTokenizer(line)).nextToken());
-				} else if (Tuner.goal == 't') {
-					StringTokenizer st = new StringTokenizer(line);
-					value = Double.valueOf(st.nextToken());
-					double qual = Double.valueOf(st.nextToken());
-					//if (value >= Tuner.cutoffTime) {
-					if (st.hasMoreTokens()
-							&& ! st.nextToken().toLowerCase().startsWith("sat")) {
-						// The modified PAR10 criterion for tuning computation time
-						if (Tuner.opt == null) {
-							// no optimum info provided. return 0.01 and assume it represents the gap in 100%
-							opt = 0.01;
-							qualScale = 100;
-							qual = Math.max(qual, opt);
-							// only for tuning cplex with gap as quality, 
-							// the gap shouldn't be larger than 100%.
-							if (qual >= qualScale) {
-								qual = penalty * qualScale;
-							}
-							//qual = Math.min(qual, qualScale);
-						} else {
-							opt = Tuner.opt.get(ins.getName());
-							qualScale = opt;
-						}
-						value = penalty * Tuner.cutoffTime
-								* (1 + penalty * Math.abs(qual - opt) / qualScale);
-						//value = Tuner.cutoffTime * qual / opt;
-					}
-					//value = Math.log(value + 1);
-				}
-				break;
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.error("Invalid last line of response: {}", line);
-			}
-		} while (++trial < maxTrial);
-		
-		if (trial == maxTrial) {
-			// invalid last line after max number of trials 
-			log.error("max number {} trials exceeded. Invalid last line of target algorithm response: {}", maxTrial, line);
-			numExp = 1;
-			return Double.MAX_VALUE;
 		}
 
 		numExp = 1;
 		Tuner.arch.put(conf, ins, value);
+		OutputHandler.storeArchiveToFile();
 		log.info("Evaluation result: {}", value);
 		return value;
 

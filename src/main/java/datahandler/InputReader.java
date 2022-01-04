@@ -258,12 +258,16 @@ public class InputReader {
 	public String readAll() {
 		StringBuffer sb = new StringBuffer("");
 		try {
+			line = in.readLine();
+			if (line == null) {
+				return line;
+			}
 			while (true) {
-					line = in.readLine();
+				sb.append(line);
+				line = in.readLine();
 				if (line == null) {
 					break;
 				}
-				sb.append(line);
 				sb.append("\n");
 			}
 		} catch (IOException e) {

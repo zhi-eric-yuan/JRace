@@ -12,9 +12,9 @@ public class NumericalParameter extends Parameter {
 	/**
 	 * The range of the numerical parameter. Two-element array with {lower bound, upper bound}.
 	 */
-	protected double[] range;
+	protected transient double[] range;
 	
-	protected double defaultValue = Double.MIN_VALUE;
+	protected transient double defaultValue = Double.MIN_VALUE;
 
 	/**
 	 * @return the defaultValue

@@ -4,6 +4,10 @@ package datahandler;
  * Created on 23.08.2005
  */
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import tune.Tuner;
+import util.SystemProperty;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,9 +15,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 
-import util.SystemProperty;
+import static tune.Tuner.arch;
 
 /**
  * Enter type description here.
@@ -497,4 +500,11 @@ public class OutputHandler {
 	}
 
 
+    public static void storeArchiveToFile() {
+		if (Tuner.archiveFile != null) {
+			Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+			String jsonText = gson.toJson(Tuner.arch);
+			print2File(Tuner.archiveFile, jsonText);
+		}
+    }
 }

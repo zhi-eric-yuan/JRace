@@ -3,6 +3,8 @@
  */
 package algo;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * @author yuan
  * Created on Apr 16, 2013
@@ -47,9 +49,9 @@ public class Instance {
 	}
 
 	protected String name;
-	protected String dir;
-	protected String insInit;
-	protected String seedInit;
+	protected transient String dir;
+	protected transient String insInit;
+	protected transient String seedInit;
 	
 	/**
 	 * 
@@ -107,11 +109,15 @@ public class Instance {
 			return false;
 		return true;
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer(name);
 		sb.append(" ");
 		sb.append(seed);
 		return sb.toString();
+	}
+
+	public String toJsonText() {
+		return new StringBuilder("\"instance\":\"").append(name).append("\",\"seed\":").append(seed).toString();
 	}
 }

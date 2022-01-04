@@ -4,9 +4,13 @@
 package tune;
 
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.google.gson.Gson;
+import datahandler.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +20,6 @@ import algo.Configuration;
 import algo.Instance;
 import algo.NumericalParameter;
 import algo.Parameter;
-import datahandler.CmdLineHandler;
-import datahandler.CopsOptionParser;
-import datahandler.InputHandler;
-import datahandler.OutputHandler;
 import eval.AlgorithmEvaluator;
 import race.Race;
 import util.Randomizer;
@@ -53,6 +53,7 @@ public class Tuner {
 	//public static String tuner = "utrace";
 	public static int signifDigit;
 	public static Archive arch = new Archive();
+	public static Archive warmStartArchive = new Archive();
 	public static double cutoffTime;
 	public static HashMap<String, Double> opt;
 	public static boolean useFRace;
@@ -62,6 +63,10 @@ public class Tuner {
 	public static Configuration defaultConfig;
 	public static boolean hasDefault;
 	private static long randomSeed;
+	public static boolean warmStart;
+	private static String randomSeedFile;
+	public static String archiveFile;
+	public static int initialArchiveSize = 0;
 
 	/**
 	 * 
@@ -76,6 +81,36 @@ public class Tuner {
 		// Logger log = Logger.getLogger("");
 		//log.setLevel(Level.WARNING);
 		parser = chandler.readCmdLineArgs(args);
+		randomSeedFile = SystemProperty.get(SystemProperty.RANDOM_SEED_FILE);
+		archiveFile = SystemProperty.get(SystemProperty.ARCHIVE_FILE);
+		warmStart = (Boolean) parser.getOptionValue(CopsOptionParser.WARM_START, false);
+		if (warmStart) {
+			if (randomSeedFile == null || archiveFile == null) {
+				log.error("Warm start failed, because either random seed file or archive file is not defined. Will proceed without warm start");
+				warmStart = false;
+			} else {
+				File f = new File(archiveFile);
+				if (! f.exists() || f.isDirectory()) {
+					log.error("Warm start failed, because no valid archive file is found. Will proceed without warm start");
+					warmStart = false;
+				} else {
+					readArchiveFromFile();
+					if (warmStartArchive.getSize() <= 0) {
+						log.error("Warm start failed, because archive file is empty. Will proceed without warm start");
+						warmStart = false;
+					} else {
+						f = new File(randomSeedFile);
+						if (! f.exists() || f.isDirectory()) {
+							log.error("Warm start failed, because no valid random seed file is found. Will proceed without warm start");
+							warmStart = false;
+						} else {
+							readRandomSeedFromFile();
+						}
+					}
+
+				}
+			}
+		}
 		init();
 		String paramFile = SystemProperty.get(SystemProperty.PARAM_FILE);
 		Parameter[] params = InputHandler.readParams(paramFile);
@@ -241,9 +276,24 @@ public class Tuner {
 
 	}
 
+	private static void readArchiveFromFile() {
+		Gson gson = new Gson();
+		InputReader ir = new InputReader(archiveFile);
+		String jsonText = ir.readAll();
+		warmStartArchive = gson.fromJson(jsonText, Archive.class);
+		initialArchiveSize = warmStartArchive.getSize();
+		log.info("Warm start read archive from file {} with {} entries", archiveFile, initialArchiveSize);
+	}
+
+	private static void readRandomSeedFromFile() {
+		InputReader ir = new InputReader(randomSeedFile);
+		randomSeed = Long.parseLong(ir.readAll());
+		log.info("Read random seed from file {}: {}", randomSeedFile, randomSeed);
+	}
+
 	private static void writeBestConfigToFile(String outputConfigJsonFile, Configuration configuration) {
 		if (outputConfigJsonFile != null && ! outputConfigJsonFile.isEmpty()) {
-			 OutputHandler.print2File(outputConfigJsonFile, configuration.ToJsonString());
+			 OutputHandler.print2File(outputConfigJsonFile, configuration.toJsonString());
 			 log.info("Best configuration {} written to json file: {}", configuration, outputConfigJsonFile);
 		}
 	}
@@ -361,7 +411,12 @@ public class Tuner {
 	}
 
 	private static void init() {
-		randomSeed = (long) SystemProperty.getDouble(SystemProperty.RANDOM_SEED, System.nanoTime());
+		if (! warmStart) {
+			randomSeed = (long) SystemProperty.getDouble(SystemProperty.RANDOM_SEED, System.nanoTime());
+			if (randomSeedFile != null) {
+				OutputHandler.print2File(randomSeedFile, String.valueOf(randomSeed));
+			}
+		}
 		Randomizer.init(randomSeed);
 		log.info("JRace starts with random seed {}", randomSeed);
 		tuner = SystemProperty.get(SystemProperty.TUNER);

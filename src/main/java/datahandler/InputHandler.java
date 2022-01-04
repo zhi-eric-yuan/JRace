@@ -164,8 +164,15 @@ public class InputHandler {
 		while (reader.readLine()) {
 			line = reader.getLine();
 			paramName = reader.nextString();
-			pos = line.indexOf('\"') + 1;
-			pos2 = line.indexOf('\"', pos);
+			int singleQuoteIndex = line.indexOf('\'');
+			if (singleQuoteIndex >= 0) {
+				pos = singleQuoteIndex + 1;
+				pos2 = line.indexOf('\'', singleQuoteIndex);
+			} else {
+				pos = line.indexOf('\"') + 1;
+				pos2 = line.indexOf('\"', pos);
+				
+			}
 			paramRep = line.substring(pos, pos2);
 			line = line.substring(pos2 + 1).trim();
 			paramType = line.charAt(0);

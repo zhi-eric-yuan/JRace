@@ -9,9 +9,9 @@ package algo;
  *
  */
 public class CategoricalParameter extends Parameter {
-	
-	String [] values;
-	String defaultValue;
+
+	transient String [] values;
+	transient String defaultValue;
 
 	/**
 	 * @return the defaultValue

@@ -7,7 +7,7 @@
 
 debug				=	false	// choose "true" to print logs in detail, "false" to close log output.
 validation  = false  // "true" to perform validation, "false" to turn off validation
-max_exp = 100    // Maximum number of experiments. Tuning budget. 
+max_exp = 50    // Maximum number of experiments. Tuning budget. 
 tuning_goal = solution quality  // solution quality, computation time, or anytime performance
 cutoff_time = 1 // the cut-off time for target algorithm
 
@@ -31,7 +31,7 @@ output_configuration_json_file = random/output_config.json	// Output file contai
 # JRace algorithmic setting
 ###########################
 
-tuner       = irace  // choose the tuner: "urace" or "irace" or "bobyqa" or "cmaes" or "bc" or "simplex" or "ubc"
+tuner       = cmaes  // choose the tuner: "urace" or "irace" or "bobyqa" or "cmaes" or "bc" or "simplex" or "ubc"
 race_type     = t // "f" for F-Race, "t" for t-Race (tNo-Race).
 interactive = true  // F-Race with interactive information
 signif_digit = 2    // the number of significant digits (significant figures). By default, 2. 
@@ -56,3 +56,6 @@ s_num_add_eval = 3
 multi_elites = false
 bobyqa_restart_type = 2 // 1: radius 0.5 / 0.2; 2: radius 0.5 with volume rate 0.8; 3: bi-alternating-radius with one radius starting from 0.5 and volume rate 0.8 and one radius always 0.2 
 #c_num_add_eval = 1 // 
+#random_seed = 7688422002014906
+archive_file = random/archive.json
+random_seed_file = random/random_seed.txt

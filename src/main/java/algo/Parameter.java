@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  */
 public class Parameter {
-	protected Parameter conditionalTo;
+	protected transient Parameter conditionalTo;
 	/**
 	 * @return the conditionalTo
 	 */
@@ -19,8 +19,8 @@ public class Parameter {
 		return conditionalTo;
 	}
 
-	protected HashMap<Object, Boolean> conditionalValues;
-	protected boolean conditional;
+	protected transient HashMap<Object, Boolean> conditionalValues;
+	protected transient boolean conditional;
 	/**
 	 * @return the conditional
 	 */
@@ -40,7 +40,7 @@ public class Parameter {
 	/**
 	 * Parameter representation, e.g. "--alpha= ". 
 	 */
-	protected String rep;
+	protected transient String rep;
 	/**
 	 * @return the rep
 	 */
@@ -51,7 +51,7 @@ public class Parameter {
 	/**
 	 * Parameter type, "r" for real-valued, "i" for integer-valued, "c" for categorical
 	 */
-	protected char type;
+	protected transient char type;
 
 	/**
 	 * @param type 

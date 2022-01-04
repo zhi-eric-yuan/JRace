@@ -3,12 +3,11 @@
  */
 package tests;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
+import com.google.gson.Gson;
+import datahandler.InputReader;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.analysis.MultivariateFunction;
 import org.apache.commons.math.exception.TooManyEvaluationsException;
@@ -63,7 +62,9 @@ public class MathTester {
 		Tuner.parser = new CopsOptionParser();
 		//testLog();
 		//testArray();
-		testStringTokenizer();
+		//testStringTokenizer();
+		//testHashMap();
+		testGson();
 		//testHash();
 		//testMath();
 		//testStatTests();
@@ -78,7 +79,71 @@ public class MathTester {
 		//testSmac();
 	}
 
+	private static void testGson() {
+		HashMap<String, Double> inMap = new HashMap<>();
+		inMap.put("A", 1.0);
+		inMap.put("B", 2.0);
+		HashMap<String, HashMap<String, Double>> map = new HashMap<>();
+		map.put("a", inMap);
+
+		System.out.println(map);
+
+		Gson gson = new Gson();
+		//gson.toJson(map);
+		gson.toJson(1);            // ==> 1
+		gson.toJson("abcd");       // ==> "abcd"
+		System.out.println(gson.toJson(map));
+		gson.toJson(new Long(10)); // ==> 10
+		int[] values = { 1 };
+		gson.toJson(values);       // ==> [1]
+
+// Deserialization
+		int one = gson.fromJson("1", int.class);
+		//Integer one = gson.fromJson("1", Integer.class);
+		//Long one = gson.fromJson("1", Long.class);
+		//Boolean false = gson.fromJson("false", Boolean.class);
+		String str = gson.fromJson("\"abc\"", String.class);
+		String[] anotherStr = gson.fromJson("[\"abc\"]", String[].class);
+		InputReader ir = new InputReader("archive.json");
+		String jsonText = ir.readAll();
+		System.out.println(jsonText);
+		Archive arch = gson.fromJson(jsonText, Archive.class);
+		System.out.println(arch);
+	}
+
+	private static void testHashMap() {
+		HashMap<String, Double> inMap = new HashMap<>();
+		inMap.put("A", 1.0);
+		inMap.put("B", 2.0);
+ 		HashMap<String, HashMap<String, Double>> map = new HashMap<>();
+ 		map.put("a", inMap);
+
+		System.out.println(map);
+		//Properties properties = new Properties();
+		//properties.putAll(map);
+		//properties.store(new FileOutputStream("foo.properties"), null);
+		ObjectOutputStream out = null;
+		try {
+			out = new ObjectOutputStream(new FileOutputStream("data.ser"));
+			out.writeObject(map);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		HashMap<String, HashMap<String, Double>> map2 = null;
+
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data.ser"));
+			map2 = (HashMap<String, HashMap<String, Double>>) in.readObject();
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(map2);
+	}
+
 	private static void testStringTokenizer() {
+		System.out.println((Double.MAX_VALUE + Double.MAX_VALUE)/2);
 		String command = "bash jsprit_latam_hard/run.sh -i ~/Projects/logistics-optimization/solutions-comparator/data/1000_hard_latam_20210628-0704/37473688.json -s 870316129 -c \"late_dt=10.0 ,dist=10.0 \"";
 		StringTokenizer st = new StringTokenizer(command);
         String[] cmdarray = new String[st.countTokens()];

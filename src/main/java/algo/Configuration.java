@@ -20,14 +20,14 @@ import util.CollectionHandler;
  */
 public class Configuration {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final transient Logger log = LoggerFactory.getLogger(getClass());
 	
-	protected boolean outOfBound = false;
+	protected transient boolean outOfBound = false;
 	/**
 	 * The penalty value for a configuration being out of bound. 
 	 * By default, 1 means no penalty, and it should be a multiplicative factor greater than 1. 
 	 */
-	protected double outOfBoundPenalty = 1;
+	protected transient double outOfBoundPenalty = 1;
 	
 	/**
 	 * @return the outOfBound
@@ -40,18 +40,18 @@ public class Configuration {
 	 * The number of parameters in each configuration 
 	 * (or the dimension of the parameter space).
 	 */
-	public static int dim;
+	public transient static int dim;
 
 	/**
 	 * The parameter definition list.
 	 */
-	ArrayList<Parameter> parameters;
+	transient ArrayList<Parameter> parameters;
 	/**
 	 * The parameter value list.
 	 */
 	ArrayList<Object> values;
 	
-	private HashMap<CategoricalParameter, double[]> probMap;
+	private transient HashMap<CategoricalParameter, double[]> probMap;
 	
 	/**
 	 * @param probMap the probMap to set
@@ -63,7 +63,7 @@ public class Configuration {
 	/**
 	 * The command line output of the configuration
 	 */
-	private String cmdOutput;
+	private transient String cmdOutput;
 
 	/**
 	 * 
@@ -353,8 +353,12 @@ public class Configuration {
 		return scaled;
 	}
 
-    public String ToJsonString() {
-		StringBuilder sb = new StringBuilder("{");
+    public String toJsonString() {
+		return new StringBuilder("{").append(toJsonText()).append("}").toString();
+    }
+
+	public String toJsonText() {
+		StringBuilder sb = new StringBuilder("");
 		Parameter param;
 		Object value;
 		for (int i = 0; i < dim; i++) {
@@ -373,12 +377,10 @@ public class Configuration {
 				}
 				if (i < dim - 1) {
 					sb.append(",");
-				} else {
-					sb.append("}");
 				}
 			}
 		}
 
 		return sb.toString();
-    }
+	}
 }
